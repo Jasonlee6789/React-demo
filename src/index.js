@@ -3,13 +3,13 @@ import ReactDOM from "react-dom";
 import "./style.css";
 
 class Board extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      squares: Array(9).fill(null),
-      xIsNext: true,
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     squares: Array(9).fill(null),
+  //     xIsNext: true,
+  //   };
+  // }
 
   handleClick(i) {
     const squares = this.state.squares.slice();
@@ -27,8 +27,10 @@ class Board extends React.Component {
     // return <Square value={i} />;
     return (
       <Square
-        value={this.state.squares[i]}
-        onClick={() => this.handleClick(i)}
+        // value={this.state.squares[i]}
+        value={this.props.squares[i]}
+        // onClick={() => this.handleClick(i)}
+        onClick={() => this.props.onClick(i)}
       />
     );
   }
