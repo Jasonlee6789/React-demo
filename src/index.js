@@ -4,6 +4,8 @@ import "./style.css";
 import "semantic-ui-less/semantic.less";
 import App from "./App";
 
+ReactDOM.render(<App />, document.getElementById("root"));
+
 class Board extends React.Component {
   // constructor(props) {
   //   super(props);
@@ -185,8 +187,6 @@ class Game extends React.Component {
     );
   }
 }
-
-ReactDOM.render(<App />, document.getElementById("root"));
 
 function calculateWinner(squares) {
   const lines = [
