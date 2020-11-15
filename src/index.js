@@ -6,6 +6,13 @@ import App from "./App";
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
+}
 class Board extends React.Component {
   // constructor(props) {
   //   super(props);
@@ -90,14 +97,6 @@ class Board extends React.Component {
 //     );
 //   }
 // }
-
-function Square(props) {
-  return (
-    <button className="square" onClick={props.onClick}>
-      {props.value}
-    </button>
-  );
-}
 
 class Game extends React.Component {
   constructor(props) {
