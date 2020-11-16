@@ -4,6 +4,9 @@ import Square from "./Square";
 import _ from "lodash";
 
 function Board(props) {
+  // const row = (id / game.size) >> 0;
+  // const col = id % game.size;
+
   const rows = _.times(props.game.size, (row) => (
     <Grid.Row>{cols(row)}</Grid.Row>
   ));
@@ -13,6 +16,7 @@ function Board(props) {
 
     for (let col = 0; col < props.game.size; col++) {
       let id = row * props.game.size + col;
+
       items.push(
         <Grid.Column width={1}>
           <Square
