@@ -5,28 +5,38 @@ import WinnerModal from "./WinnerModal";
 import { useNewGame, useNextMove } from "./TicTacToeAPI";
 
 function TicTacToe() {
-  // const initialGame = { size: 5, board: [] };
-  const [size, setSize] = useState(5);
-  // const [
-  //   { game, isLoadingNewGame, isErrorNewGame },
-  //   setGame,
-  //   setStartNew,
-  // ] = useNewGame(initialGame);
-  const [isStart, setIsStart] = useState(false);
-  // const [
-  //   { isOver, isLoadingNextMove, isErrorNextMove },
-  //   setMove,
-  //   setIsOver,
-  // ] = useNextMove({});
-  const [isOver, setIsOver] = useState(false);
+  // // const initialGame = { size: 5, board: [] };
+  // const [size, setSize] = useState(5);
 
-  const [player, setPlayer] = useState(1);
+  // // const [
+  // //   { game, isLoadingNewGame, isErrorNewGame },
+  // //   setGame,
+  // //   setStartNew,
+  // // ] = useNewGame(initialGame);
+  // const [isStart, setIsStart] = useState(false);
+
+  // // const [
+  // //   { isOver, isLoadingNextMove, isErrorNextMove },
+  // //   setMove,
+  // //   setIsOver,
+  // // ] = useNextMove({});
+  // const [isOver, setIsOver] = useState(false);
+
+  // const [player, setPlayer] = useState(1);
+
+  // const [board, setBoard] = useState(new Array(size * size));
+
+  const [state, dispatch] = useReducer(TicTacToeReducer, {
+    player: 1,
+    size: 5,
+    board: new Array(25),
+    isStart: false,
+    isOver: false,
+  });
 
   const [game, setGame] = useNewGame(null);
 
   const [move, setMove] = useNextMove(null);
-
-  const [board, setBoard] = useState(new Array(size * size));
 
   // const [isLoading, setIsLoading] = useState(
   //   isLoadingNewGame || isLoadingNextMove
@@ -53,42 +63,51 @@ function TicTacToe() {
       setIsLoading(false);
     }
     if (move.data === 1 || move.data === 2) {
-      setIsOver(true);
+      //setIsOver(true);
+      dispatch({ type: "GAME_OVER" });
       move.data = 0;
     }
-  }, [game, move, size]);
+  }, [game, move, state.size]);
 
   function handleClick(id) {
-    const row = (id / game.size) >> 0;
-    const col = id % game.size;
+    const row = (id / state.size) >> 0;
+    const col = id % state.size;
 
     const newMove = {
       row: row,
       col: col,
-      player: player,
+      player: state.player,
     };
 
     setMove(newMove);
 
-    let newBoard = board.slice();
+    let newBoard = state.board.slice();
 
-    newBoard[id] = player === 1 ? "x" : "o";
+    newBoard[id] = state.player === 1 ? "x" : "o";
 
-    setBoard(newBoard);
-    setPlayer(player === 1 ? 2 : 1);
+    // setBoard(newBoard);
+    // setPlayer(player === 1 ? 2 : 1);
+    dispatch({
+      type: "GAME_MOVE",
+      payload: {
+        player: setPlayer === 1 ? 2 : 1,
+        board: newBoard,
+      },
+    });
   }
 
   function handleModalClose() {
-    setIsOver(false);
+    // setIsOver(false);
+    dispatch({ type: "GAME_NOPE" });
   }
 
   function handleModalNewGame() {
-    setGame({ size: size, board: [] });
-
-    setBoard(new Array(size * size));
-    setIsOver(false);
-    setIsStart(true);
-    setPlayer(1);
+    setGame({ size: state.size, board: [] });
+    dispatch({ type: "GAME_INIT" });
+    // setBoard(new Array(size * size));
+    // setIsOver(false);
+    // setIsStart(true);
+    // setPlayer(1);
   }
 
   function handleDismiss() {
@@ -96,23 +115,28 @@ function TicTacToe() {
   }
 
   function handleSizeChange(e, { value }) {
-    setSize(value);
+    // setSize(value);
+    const size = parseInt(value, 10);
+    if (isNan(size)) {
+      return;
+    }
+    dispatch({ type: "GAME_SIZE", payload: { size: size } });
   }
 
   function handleStartGame() {
-    setGame({ size: size, board: [] });
-
-    setBoard(new Array(size * size));
-    setIsOver(false);
-    setIsStart(true);
-    setPlayer(1);
+    setGame({ size: state.size, board: [] });
+    dispatch({ type: "GAME_INIT" });
+    // setBoard(new Array(size * size));
+    // setIsOver(false);
+    // setIsStart(true);
+    // setPlayer(1);
   }
 
   return (
     <div>
-      {isOver && (
+      {state.isOver && (
         <WinnerModal
-          open={isOver}
+          open={state.isOver}
           onClose={handleModalClose}
           onNewGame={handleModalNewGame}
         />
@@ -134,17 +158,21 @@ function TicTacToe() {
         //</Dimmer>
       } */}
 
-      {isStart && (
-        <Board board={board} size={size} onClick={(id) => handleClick(id)} />
+      {state.isStart && (
+        <Board
+          board={state.board}
+          size={state.size}
+          onClick={(id) => handleClick(id)}
+        />
       )}
 
-      {!isStart && (
+      {!state.isStart && (
         <Input
           ref={inputSize}
           type="text"
           placeholder="Board Size ..."
           action
-          default={size}
+          default={state.size}
           onChange={handleSizeChange}
         >
           <input />
@@ -155,6 +183,43 @@ function TicTacToe() {
       )}
     </div>
   );
+}
+
+function TicTacToeReducer(state, action) {
+  switch (action.type) {
+    case "GAME_SIZE":
+      return {
+        ...state,
+        size: action.payload.size,
+      };
+    case "GAME_MOVE":
+      return {
+        ...state,
+        board: action.payload.board,
+        player: action.payload.player,
+      };
+    case "GAME_INIT":
+      return {
+        ...state,
+        isOver: false,
+        isStart: true,
+        board: new Array(state.size * state.size),
+        player: 1,
+      };
+    case "GAME_OVER":
+      return {
+        ...state,
+        isOver: true,
+        isStart: false,
+      };
+    case "GAME_NOPE":
+      return {
+        ...state,
+        isOver: false,
+        isStart: false,
+      };
+    default:
+  }
 }
 
 export default TicTacToe;
