@@ -1,46 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useReducer } from "react";
 import Board from "./Board";
-import { Message, Dimmer, Loader } from "semantic-ui-react";
+import { Input, Button, Message, Dimmer, Loader } from "semantic-ui-react";
 import WinnerModal from "./WinnerModal";
-import useNewGame, { useNextMove } from "./TicTacToeAPI";
+import { useNewGame, useNextMove } from "./TicTacToeAPI";
 
 function TicTacToe() {
-  const initialGame = { size: 5, board: [] };
-
-  const [
-    { game, isLoadingNewGame, isErrorNewGame },
-    setGame,
-    setStartNew,
-  ] = useNewGame(initialGame);
-
-  const [
-    { isOver, isLoadingNextMove, isErrorNextMove },
-    setMove,
-    setIsOver,
-  ] = useNextMove({});
+  // const initialGame = { size: 5, board: [] };
+  const [size, setSize] = useState(5);
+  // const [
+  //   { game, isLoadingNewGame, isErrorNewGame },
+  //   setGame,
+  //   setStartNew,
+  // ] = useNewGame(initialGame);
+  const [isStart, setIsStart] = useState(false);
+  // const [
+  //   { isOver, isLoadingNextMove, isErrorNextMove },
+  //   setMove,
+  //   setIsOver,
+  // ] = useNextMove({});
+  const [isOver, setIsOver] = useState(false);
 
   const [player, setPlayer] = useState(1);
 
-  const [isLoading, setIsLoading] = useState(
-    isLoadingNewGame || isLoadingNextMove
-  );
+  const [game, setGame] = useNewGame(null);
 
-  const [isError, setIsError] = useState(isErrorNewGame || isErrorNextMove);
+  const [move, setMove] = useNextMove(null);
+
+  const [board, setBoard] = useState(new Array(size * size));
+
+  // const [isLoading, setIsLoading] = useState(
+  //   isLoadingNewGame || isLoadingNextMove
+  // );
+  const [isLoading, setIsLoading] = useState(game.isLoading || move.isLoading);
+
+  // const [isError, setIsError] = useState(
+  //   isErrorNewGame || isErrorNextMove);
+  const [isError, setIsError] = useState(game.isError || move.isError);
+
+  const inputSize = useRef(null);
 
   useEffect(() => {
-    if (isErrorNewGame || isErrorNextMove) {
+    if (game.isError || move.isError) {
       setIsError(true);
     }
-    if (!isErrorNewGame || !isErrorNextMove) {
+    if (!game.isError || !move.isError) {
       setIsError(false);
     }
-    if (isLoadingNewGame || isLoadingNextMove) {
+    if (game.isLoading || move.isLoading) {
       setIsLoading(true);
     }
-    if (!isLoadingNewGame || !isLoadingNextMove) {
+    if (!game.isLoading || !move.isLoading) {
       setIsLoading(false);
     }
-  }, [isErrorNewGame, isErrorNextMove, isLoadingNewGame, isLoadingNextMove]);
+    if (move.data === 1 || move.data === 2) {
+      setIsOver(true);
+      move.data = 0;
+    }
+  }, [game, move, size]);
 
   function handleClick(id) {
     const row = (id / game.size) >> 0;
@@ -54,11 +70,11 @@ function TicTacToe() {
 
     setMove(newMove);
 
-    let newGame = game;
+    let newBoard = board.slice();
 
-    newGame.board[id] = player === 1 ? "x" : "o";
+    newBoard[id] = player === 1 ? "x" : "o";
 
-    setGame(newGame);
+    setBoard(newBoard);
     setPlayer(player === 1 ? 2 : 1);
   }
 
@@ -67,13 +83,29 @@ function TicTacToe() {
   }
 
   function handleModalNewGame() {
+    setGame({ size: size, board: [] });
+
+    setBoard(new Array(size * size));
     setIsOver(false);
-    setStartNew(true);
+    setIsStart(true);
     setPlayer(1);
   }
 
   function handleDismiss() {
     setIsError(false);
+  }
+
+  function handleSizeChange(e, { value }) {
+    setSize(value);
+  }
+
+  function handleStartGame() {
+    setGame({ size: size, board: [] });
+
+    setBoard(new Array(size * size));
+    setIsOver(false);
+    setIsStart(true);
+    setPlayer(1);
   }
 
   return (
@@ -94,15 +126,33 @@ function TicTacToe() {
         />
       )}
 
-      {
+      {/* {
         isLoading && (
           //<Dimmer active>
           <Loader active>Loading</Loader>
         )
         //</Dimmer>
-      }
+      } */}
 
-      <Board game={game} onClick={(id) => handleClick(id)} />
+      {isStart && (
+        <Board board={board} size={size} onClick={(id) => handleClick(id)} />
+      )}
+
+      {!isStart && (
+        <Input
+          ref={inputSize}
+          type="text"
+          placeholder="Board Size ..."
+          action
+          default={size}
+          onChange={handleSizeChange}
+        >
+          <input />
+          <Button type="submit" onClick={handleStartGame}>
+            let's play!!!
+          </Button>
+        </Input>
+      )}
     </div>
   );
 }
