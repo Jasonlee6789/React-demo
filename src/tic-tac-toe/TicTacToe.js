@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Board from "./Board";
 import { Message, Dimmer, Loader } from "semantic-ui-react";
-import WinnerModal from "./WinnerModel";
+import WinnerModal from "./WinnerModal";
 import useNewGame, { useNextMove } from "./TicTacToeAPI";
 
 function TicTacToe() {
