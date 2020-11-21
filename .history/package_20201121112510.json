@@ -14,11 +14,13 @@
     "semantic-ui-react": "^2.0.1",
     "web-vitals": "^0.2.4"
   },
-  "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject"
+  {
+    "scripts": {
+      "start": "craco start",
+      "build": "craco build",
+      "test": "craco test",
+      "eject": "craco eject"
+    }
   },
   "eslintConfig": {
     "extends": [
