@@ -31,11 +31,6 @@ export default function TicTacToeReducer(state, action) {
         isOver: false,
         isStart: false,
       };
-    case "GAME_ERROR":
-      return {
-        ...state,
-        isError: true,
-      };
     default:
   }
 }

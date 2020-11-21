@@ -9,8 +9,8 @@ export default function AppMenu() {
   }
 
   return (
-    <Segment inverted color="teal">
-      <Menu stackable inverted pointing secondary color="teal">
+    <Segment inverted color="blue">
+      <Menu stackable inverted pointing secondary color="blue">
         <Menu.Item
           name="home"
           active={activeItem === "home"}

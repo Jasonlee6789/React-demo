@@ -128,7 +128,7 @@ function TicTacToe() {
   function handleSizeChange(e, { value }) {
     // setSize(value);
     const size = parseInt(value, 10);
-    if (isNaN(size)) {
+    if (!size) {
       return;
     }
     dispatch({ type: "GAME_SIZE", payload: { size: size } });
