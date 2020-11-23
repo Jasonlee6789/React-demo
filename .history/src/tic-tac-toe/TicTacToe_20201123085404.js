@@ -182,12 +182,7 @@ function TicTacToe() {
             onChange={handleSizeChange}
           >
             <input />
-            <Button
-              floated="right"
-              type="submit"
-              onClick={handleStartGame}
-              color="teal"
-            >
+            <Button type="submit" onClick={handleStartGame} color="teal">
               let's play!!!
             </Button>
           </Input>

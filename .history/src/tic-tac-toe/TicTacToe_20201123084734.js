@@ -170,30 +170,6 @@ function TicTacToe() {
         //</Dimmer>
       } */}
 
-      {!state.isStart && (
-        <Container textAlign="center">
-          <Input
-            floated="right"
-            ref={inputSize}
-            type="text"
-            placeholder="Board Size ..."
-            action
-            default={state.size}
-            onChange={handleSizeChange}
-          >
-            <input />
-            <Button
-              floated="right"
-              type="submit"
-              onClick={handleStartGame}
-              color="teal"
-            >
-              let's play!!!
-            </Button>
-          </Input>
-        </Container>
-      )}
-
       {state.isStart && (
         <div>
           <Container textAlign="center">
@@ -205,6 +181,24 @@ function TicTacToe() {
             onClick={(id) => handleClick(id)}
           />
         </div>
+      )}
+
+      {!state.isStart && (
+        <Container textAlign="center">
+          <Input
+            ref={inputSize}
+            type="text"
+            placeholder="Board Size ..."
+            action
+            default={state.size}
+            onChange={handleSizeChange}
+          >
+            <input />
+            <Button type="submit" onClick={handleStartGame} color="teal">
+              let's play!!!
+            </Button>
+          </Input>
+        </Container>
       )}
     </div>
   );

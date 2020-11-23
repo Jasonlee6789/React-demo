@@ -173,7 +173,6 @@ function TicTacToe() {
       {!state.isStart && (
         <Container textAlign="center">
           <Input
-            floated="right"
             ref={inputSize}
             type="text"
             placeholder="Board Size ..."
@@ -182,12 +181,7 @@ function TicTacToe() {
             onChange={handleSizeChange}
           >
             <input />
-            <Button
-              floated="right"
-              type="submit"
-              onClick={handleStartGame}
-              color="teal"
-            >
+            <Button type="submit" onClick={handleStartGame} color="teal">
               let's play!!!
             </Button>
           </Input>

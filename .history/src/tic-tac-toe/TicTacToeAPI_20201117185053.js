@@ -1,5 +1,6 @@
+import { useState, useEffect, useRef } from "react";
 import { usePostAPI } from "../common/APIUtil";
-
+import axios from "axios";
 // export default function useNewGame(initialGame)
 export function useNewGame(newGame) {
   const url = "http://localhost:5000/api/tictactoe/newgame";
@@ -36,9 +37,7 @@ export function useNewGame(newGame) {
 export function useNextMove(newMove) {
   // const didMountRef = useRef(false);
   const url = "http://localhost:5000/api/tictactoe/move";
-
   const [state, setBody] = usePostAPI(url, newMove);
-
   return [state, setBody];
   // const [move, setMove] = useState(newMove);
   // const [isOver, setIsOver] = useState(false);
